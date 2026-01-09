@@ -23,6 +23,8 @@ enum Sturldata: Transferable {
         // (they will have "image/jpeg" or some such as the mime type)
         if let imageData = url.dataSchemeImageData {
             self = .data(imageData)
+        } else if url.isFileURL, let data = try? Data(contentsOf: url) {
+            self = .data(data)
         } else {
             self = .url(url.imageURL)
         }
