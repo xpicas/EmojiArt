@@ -48,6 +48,13 @@ extension AnyTransition {
     static let rollDown: AnyTransition = .asymmetric(insertion: .move(edge: .top), removal: .move(edge: .bottom))
 }
 
+extension Character {
+    var isEmoji: Bool {
+        unicodeScalars.count == 1 &&
+        unicodeScalars.first?.properties.isEmoji == true
+    }
+}
+
 struct AnimatedActionButton: View {
     var title: String? = nil
     var systemImage: String? = nil

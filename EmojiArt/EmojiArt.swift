@@ -1,3 +1,5 @@
+//model emojiArt
+
 import Foundation
 
 struct EmojiArt: Codable {

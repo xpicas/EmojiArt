@@ -1,10 +1,4 @@
-//
-//  PaletteStore.swift
-//  Emoji Art
-//
-//  Created by CS193p Instructor on 5/10/23.
-//  Copyright (c) 2023 Stanford University
-//
+// model view de palette chooser i palette editor
 
 import SwiftUI
 internal import Combine
@@ -24,8 +18,20 @@ extension UserDefaults {
     }
 }
 
-class PaletteStore: ObservableObject {
+extension PaletteStore: Hashable {
+    static func == (lhs: PaletteStore, rhs: PaletteStore) -> Bool {
+        lhs.name == rhs.name
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+}
+
+class PaletteStore: ObservableObject, Identifiable {
     let name: String
+    
+    var id: String { name }
     
     private var userDefaultsKey: String { "PaletteStore:" + name}
     
