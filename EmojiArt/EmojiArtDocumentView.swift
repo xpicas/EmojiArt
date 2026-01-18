@@ -1,13 +1,17 @@
 import SwiftUI
 
 struct EmojiArtDocumentView: View {
+    @Environment(\.undoManager) var undoManager
+    
+    @StateObject var paletteStore = PaletteStore(named: "Shared")
+    
     typealias Emoji = EmojiArt.Emoji
     
     @ObservedObject var document: EmojiArtDocument
     
     private let emojis = "👻🍎😃🤪☹️🤯🐶🐭🦁🐵🦆🐝🐢🐄🐖🌲🌴🌵🍄🌞🌎🔥🌈🌧️🌨️☁️⛄️⛳️🚗🚙🚓🚲🛺🏍️🚘✈️🛩️🚀🚁🏰🏠❤️💤⛵️"
     
-    private let paletteEmojiSize: CGFloat = 40
+    @ScaledMetric var paletteEmojiSize: CGFloat = 40
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,6 +21,10 @@ struct EmojiArtDocumentView: View {
                 .padding(.horizontal)
                 .scrollIndicators(.hidden)
         }
+        .toolbar {
+            UndoButton()
+        }
+        .environmentObject(paletteStore)
     }
     
     private var documentBody: some View {
@@ -127,8 +135,7 @@ struct EmojiArtDocumentView: View {
             switch sturldata {
 
             case .url(let url):
-                print("Dropped URL:",url,"scheme:",url.scheme ?? "nil","isFileURL:",url.isFileURL)
-                document.setBackground(url)
+                document.setBackground(url, undoWith: undoManager)
                 return true
 
             case .string(let emoji):
@@ -136,7 +143,8 @@ struct EmojiArtDocumentView: View {
                 document.addEmoji(
                     emoji,
                     at: emojiPosition(at: location, in: geometry),
-                    size: paletteEmojiSize / zoom
+                    size: paletteEmojiSize / zoom,
+                    undoWith: undoManager
                 )
                 return true
 
